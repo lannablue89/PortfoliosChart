@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.lanna.android.portfolioschart.MainActivity">
+    tools:context="com.lanna.android.portfolioschart.view.activity.MainActivity">
 
     <TextView
         android:layout_width="wrap_content"

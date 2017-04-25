@@ -1,7 +1,9 @@
-package com.lanna.android.portfolioschart;
+package com.lanna.android.portfolioschart.view.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.lanna.android.portfolioschart.R;
 
 public class MainActivity extends AppCompatActivity {
 
