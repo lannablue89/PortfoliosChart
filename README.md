@@ -28,5 +28,9 @@ Thanks to https://github.com/PhilJay/MPAndroidChart.
 - I assump that amount if 0 or null is unavailable, is ignored when show on screen. 
 
 
+## Config Android Studio:
+There is no any special settings for Android Studio then you should be able to run this project with Android Studio after clone the source. 
+- My Android Studio version: 2.3.1
+
 ## Creator:
 Lan Tran
