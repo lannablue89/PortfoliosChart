@@ -3,8 +3,11 @@ package com.lanna.android.portfolioschart.presenter;
 import com.lanna.android.portfolioschart.domain.Constant.FilterMode;
 import com.lanna.android.portfolioschart.domain.DataService;
 import com.lanna.android.portfolioschart.domain.SchedulerProvider;
+import com.lanna.android.portfolioschart.model.PcNav;
 import com.lanna.android.portfolioschart.model.PcPortfolio;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.Observer;
@@ -24,23 +27,13 @@ public class LineChartPresenter implements LineChartContract.Presenter {
     private List<PcPortfolio> portfolios;
     private @FilterMode int currentFilterMode = FilterMode.FILTER_BY_DAY;
 
+//    private PcPortfolio portfolioTotalByDays;
+
     public LineChartPresenter(LineChartContract.View view, DataService dataService,
                               SchedulerProvider schedulerProvider) {
         this.view = view;
         this.dataService = dataService;
         this.schedulerProvider = schedulerProvider;
-    }
-
-    private List<PcPortfolio> filterData(List<PcPortfolio> portfolios, int filterMode) {
-        List<PcPortfolio> result = portfolios;//new ArrayList<>();
-        for (PcPortfolio portfolio : portfolios) {
-            portfolio.setFilterMode(filterMode);
-//            PcPortfolio item = new PcPortfolio();
-//            item.setId(portfolio.getId());
-//            item.setNavs(portfolio.getNavsByFilter());
-//            result.add(item);
-        }
-        return result;
     }
 
     @Override
@@ -93,5 +86,65 @@ public class LineChartPresenter implements LineChartContract.Presenter {
         else {
             view.onLoadSuccess(filterData(portfolios, currentFilterMode));
         }
+    }
+
+    @Override
+    public void reportTotalForEachDay() {
+        this.currentFilterMode = FilterMode.FILTER_BY_DAY;
+        if (portfolios == null || portfolios.isEmpty()) {
+            loadData();
+        }
+        else {
+            List<PcPortfolio> result = new ArrayList<>();
+            result.add(filterDataByTotal(portfolios));
+            view.onLoadSuccess(result);
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Filter Functions
+    ///////////////////////////////////////////////////////////////////////////
+
+    private List<PcPortfolio> filterData(List<PcPortfolio> portfolios, int filterMode) {
+        List<PcPortfolio> result = portfolios;//new ArrayList<>();
+        for (PcPortfolio portfolio : portfolios) {
+            portfolio.setFilterMode(filterMode);
+//            PcPortfolio item = new PcPortfolio();
+//            item.setId(portfolio.getId());
+//            item.setNavs(portfolio.getNavsByFilter());
+//            result.add(item);
+        }
+        return result;
+    }
+
+    private PcPortfolio filterDataByTotal(List<PcPortfolio> portfolios) {
+//        if (portfolioTotalByDays != null) {
+//            return portfolioTotalByDays;
+//        }
+
+        PcPortfolio portfolioTotalByDays = new PcPortfolio();
+        PcNav[] resultNavs = new PcNav[366];
+
+        int dayIndex;
+        for (PcPortfolio portfolio : portfolios) {
+            for (PcNav pcNav : portfolio.getFullNavs()) {
+                dayIndex = pcNav.getDayOfYear();
+                if (resultNavs[dayIndex] == null) { // init
+                    resultNavs[dayIndex] = new PcNav(pcNav);
+                } else { // sum
+                    resultNavs[dayIndex].addAmount(pcNav.getAmount());
+                }
+            }
+        }
+
+        List<PcNav> resultNavList = new ArrayList<>();
+        for (PcNav resultNav : resultNavs) {
+            if (resultNav != null) {
+                resultNavList.add(resultNav);
+            }
+        }
+
+        portfolioTotalByDays.setFilterredNavs(resultNavList);
+        return portfolioTotalByDays;
     }
 }

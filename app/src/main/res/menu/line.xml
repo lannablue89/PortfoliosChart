@@ -15,4 +15,9 @@
         android:id="@+id/reportByQuarters"
         android:title="Report by Quarters">
     </item>
+
+    <item
+        android:id="@+id/reportTotalForEachDay"
+        android:title="Report Total for Each Day">
+    </item>
 </menu>

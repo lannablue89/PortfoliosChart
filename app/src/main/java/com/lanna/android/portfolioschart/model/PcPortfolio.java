@@ -35,14 +35,15 @@ public class PcPortfolio {
     @Expose(serialize = false, deserialize = false)
     private List<PcNav> filterredNavs;
 
-    public PcPortfolio() {
-//        navs = new ArrayList<>(); // TODO test purpose
-    }
 
     @Override
     public String toString() {
-        return "id=" + id
-                + ", navs=" + navs
+        return
+//                "id=" + id
+//                (navs != null ? navs.size() : 0)
+//                + ", navs=" + navs
+                "" + (filterredNavs != null ? filterredNavs.size() : 0)
+//                + ", filterredNavs=" + filterredNavs
                 ;
     }
 
@@ -74,6 +75,10 @@ public class PcPortfolio {
             filterredNavs = new ArrayList<>();
         }
         return filterredNavs;
+    }
+
+    public void setFilterredNavs(List<PcNav> filterredNavs) {
+        this.filterredNavs = filterredNavs;
     }
 
     public void setFilterMode(int filterMode) {

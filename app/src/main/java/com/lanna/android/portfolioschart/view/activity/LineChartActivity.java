@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -23,7 +22,6 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.ViewPortHandler;
@@ -159,6 +157,10 @@ public class LineChartActivity extends DemoBase
             case R.id.reportByQuarters:
                 presenter.reportByQuarters();
                 break;
+
+            case R.id.reportTotalForEachDay:
+                presenter.reportTotalForEachDay();
+                break;
         }
         return true;
     }
@@ -166,21 +168,21 @@ public class LineChartActivity extends DemoBase
     private void bindData(List<PcPortfolio> portfolios) { // int mode: day, month, quarter, year
         Log.i("app", "bindData: portfolios=\n" + LogUtils.toLogStrings(true, portfolios));
 
-        int lastLinesCount = mChart.getData() != null ? mChart.getData().getDataSetCount() : 0;
+        LineData lineData = mChart.getData();
+        int lastLinesCount = lineData != null ? lineData.getDataSetCount() : 0;
         int newLinesCount = portfolios.size();
-        int count = Math.max(lastLinesCount, newLinesCount);
+        int maxCount = Math.max(lastLinesCount, newLinesCount);
         LineDataSet portfolioLineDataSet;
         List<Entry> yVals;
-        LineData lineData = null;
         float maxAmount = 0;
 
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < maxCount; i++) { // portfolios
             if (i < newLinesCount) {
                 yVals = new ArrayList<>(); // must generate new list
                 maxAmount = convertAndFilterListToAndGetMaxAmount(yVals, portfolios.get(i), maxAmount);
 
                 if (i < lastLinesCount) { // reuse last UI lines
-                    portfolioLineDataSet = (LineDataSet) mChart.getData().getDataSetByIndex(i);
+                    portfolioLineDataSet = (LineDataSet) lineData.getDataSetByIndex(i);
                     portfolioLineDataSet.setValues(yVals);
                 }
                 else {
@@ -198,7 +200,7 @@ public class LineChartActivity extends DemoBase
             }
             else if (i < lastLinesCount) {
                 // remove redundant last items
-                mChart.getData().removeDataSet(i);
+                lineData.removeDataSet(i);
 //                lastLinesCount--;
             }
         }
@@ -291,7 +293,7 @@ public class LineChartActivity extends DemoBase
 
     @Override
     public void onLoadSuccess(List<PcPortfolio> portfolios) {
-        Log.i("app", "onLoadSuccess: " + portfolios);
+        Log.i("app", "onLoadSuccess: " + portfolios.size() + ": " + portfolios);
         bindData(portfolios);
     }
 

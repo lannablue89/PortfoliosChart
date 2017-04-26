@@ -25,5 +25,7 @@ public interface LineChartContract {
         void reportByDays();
         void reportByMonths();
         void reportByQuarters();
+
+        void reportTotalForEachDay();
     }
 }
