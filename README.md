@@ -5,6 +5,8 @@
 #### Library support show Chart (Line Chart)
 Thanks to https://github.com/PhilJay/MPAndroidChart.
 
+#### Screenshots:
+Can take a look here to have a overall stuff in project: https://github.com/lannablue89/PortfoliosChart/tree/master/screenshots
 
 ## Requirements and Delivery
 
@@ -19,7 +21,7 @@ Thanks to https://github.com/PhilJay/MPAndroidChart.
 
 ### Things need to improve:
  
- - UI: now it look so basic, not nice looking and user-friendly design from I've focused on main function first, then think can improve later.
+ - UI: now it look so basic, not nice looking and user-friendly design from I've focused on main function first, then think can improve later. (Note that the ui for menu is really bad now, can improve later)
  - Unit Test: missing much test case now.
  - Move data into Firebase: later with more research first :D
 
