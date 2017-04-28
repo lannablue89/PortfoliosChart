@@ -41,9 +41,10 @@ public class PcNav {
 
     @Override
     public String toString() {
-        return "{date=" + date
-                + ", amount=" + amount
-                + "}";
+        return "{" + date
+//                + ", " + amount
+                + "}"
+                ;
     }
 
     public String getDate() {

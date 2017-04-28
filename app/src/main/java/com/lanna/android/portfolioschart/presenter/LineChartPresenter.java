@@ -7,7 +7,6 @@ import com.lanna.android.portfolioschart.model.PcNav;
 import com.lanna.android.portfolioschart.model.PcPortfolio;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.Observer;
@@ -50,7 +49,8 @@ public class LineChartPresenter implements LineChartContract.Presenter {
                     public void onNext(@NonNull List<PcPortfolio> portfolios) {
                         LineChartPresenter.this.portfolios = portfolios;
                         view.hideLoadingProgress();
-                        view.onLoadSuccess(filterData(portfolios, currentFilterMode));
+                        setFilterMode(portfolios, currentFilterMode);
+                        view.onLoadSuccess(portfolios);
                     }
 
                     @Override
@@ -84,7 +84,8 @@ public class LineChartPresenter implements LineChartContract.Presenter {
             loadData();
         }
         else {
-            view.onLoadSuccess(filterData(portfolios, currentFilterMode));
+            setFilterMode(portfolios, currentFilterMode);
+            view.onLoadSuccess(portfolios);
         }
     }
 
@@ -105,16 +106,10 @@ public class LineChartPresenter implements LineChartContract.Presenter {
     // Filter Functions
     ///////////////////////////////////////////////////////////////////////////
 
-    private List<PcPortfolio> filterData(List<PcPortfolio> portfolios, int filterMode) {
-        List<PcPortfolio> result = portfolios;//new ArrayList<>();
+    private void setFilterMode(List<PcPortfolio> portfolios, int filterMode) {
         for (PcPortfolio portfolio : portfolios) {
             portfolio.setFilterMode(filterMode);
-//            PcPortfolio item = new PcPortfolio();
-//            item.setId(portfolio.getId());
-//            item.setNavs(portfolio.getNavsByFilter());
-//            result.add(item);
         }
-        return result;
     }
 
     private PcPortfolio filterDataByTotal(List<PcPortfolio> portfolios) {
@@ -122,7 +117,7 @@ public class LineChartPresenter implements LineChartContract.Presenter {
 //            return portfolioTotalByDays;
 //        }
 
-        PcPortfolio portfolioTotalByDays = new PcPortfolio();
+        PcPortfolio result = new PcPortfolio();
         PcNav[] resultNavs = new PcNav[366];
 
         int dayIndex;
@@ -144,7 +139,7 @@ public class LineChartPresenter implements LineChartContract.Presenter {
             }
         }
 
-        portfolioTotalByDays.setFilterredNavs(resultNavList);
-        return portfolioTotalByDays;
+        result.setFilterredNavs(resultNavList);
+        return result;
     }
 }

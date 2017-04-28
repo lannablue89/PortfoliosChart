@@ -166,7 +166,7 @@ public class LineChartActivity extends DemoBase
     }
 
     private void bindData(List<PcPortfolio> portfolios) { // int mode: day, month, quarter, year
-        Log.i("app", "bindData: portfolios=\n" + LogUtils.toLogStrings(true, portfolios));
+        Log.i("app", "bindData: portfolios=" + LogUtils.toListLogStringWithEnter(portfolios));
 
         LineData lineData = mChart.getData();
         int lastLinesCount = lineData != null ? lineData.getDataSetCount() : 0;
@@ -201,14 +201,16 @@ public class LineChartActivity extends DemoBase
             else if (i < lastLinesCount) {
                 // remove redundant last items
                 lineData.removeDataSet(i);
-//                lastLinesCount--;
+                lastLinesCount--;
+                i--;
+                maxCount--;
             }
         }
 
         mChart.getAxisLeft().setAxisMaximum(maxAmount);
         mChart.getXAxis().setAxisMaximum(portfolios.get(0).getFilterredNavs().size());
-        Log.i("app", "bindData: getAxisLeft().setAxisMaximum=" + maxAmount
-                + ", getXAxis().setAxisMaximum=" + portfolios.get(0).getFilterredNavs().size());
+//        Log.i("app", "bindData: getAxisLeft().setAxisMaximum=" + maxAmount
+//                + ", getXAxis().setAxisMaximum=" + portfolios.get(0).getFilterredNavs().size());
 
         mChart.getData().notifyDataChanged();
         mChart.notifyDataSetChanged();
@@ -233,7 +235,7 @@ public class LineChartActivity extends DemoBase
     }
 
     private LineDataSet newLineDataSet(int setIndex, int setSize, List<Entry> yVals) {
-        LineDataSet set = new LineDataSet(yVals, "Set " + (setIndex+1));
+        LineDataSet set = new LineDataSet(yVals, "Portfolio " + (setIndex+1));
 
 //        int color = ColorTemplate.MATERIAL_COLORS[setIndex%ColorTemplate.MATERIAL_COLORS.length];
         int color = generateDarkColor(setSize, setIndex);
@@ -256,7 +258,7 @@ public class LineChartActivity extends DemoBase
         int r = generateSingleColor(offset);
         int g = generateSingleColor(offset);
         int b = generateSingleColor(offset);
-        Log.i("app", "generateDarkColor: offset: " + offset + ", color: " + r + "," + g + "," + b);
+//        Log.d("app", "generateDarkColor: offset: " + offset + ", color: " + r + "," + g + "," + b);
         return Color.argb(200, r, g, b);
     }
 

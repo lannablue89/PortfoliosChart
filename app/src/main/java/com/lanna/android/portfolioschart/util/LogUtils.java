@@ -342,11 +342,11 @@ public class LogUtils {
         logI(tag, "]");
     }
 
-    public static String toLogStrings(Object... logModels) {
+    public static String toArrayLogString(Object... logModels) {
         return toLogString(false, logModels);
     }
 
-    public static String toLogStringWithEnter(Object... logModels) {
+    public static String toArrayLogStringWithEnter(Object... logModels) {
         return toLogString(true, logModels);
     }
 
@@ -379,22 +379,22 @@ public class LogUtils {
         List
      */
 
-    public static String toLogString(List logModels) {
-        return toLogStrings(false, logModels);
+    public static String toListLogString(List logModels) {
+        return toListLogStrings(logModels, false);
     }
 
-    public static String toLogStringWithEnter(List logModels) {
-        return toLogStrings(true, logModels);
+    public static String toListLogStringWithEnter(List logModels) {
+        return toListLogStrings(logModels, true);
     }
 
-    private static String toLogStrings(boolean isEnter, List logModels) {
+    private static String toListLogStrings(List logModels, boolean hasEnter) {
         if (logModels == null) {
             return "null";
         }
 
         Object model;
         int n = logModels.size() - 1;
-        StringBuilder log = new StringBuilder(logModels.size()).append(isEnter ? "[\n" : "[");
+        StringBuilder log = new StringBuilder(logModels.size()).append(hasEnter ? "[\n" : "[");
         for (int i = 0; i <= n; i++) {
             model = logModels.get(i);
             if (model instanceof ILogModel) {
@@ -403,10 +403,10 @@ public class LogUtils {
                 log.append(model.toString());
             }
             if (i != n) { // not last one
-                log.append(isEnter ? ";\n" : "; ");
+                log.append(hasEnter ? ";\n" : "; ");
             }
         }
-        log.append(isEnter ? "\n]" : "]");
+        log.append(hasEnter ? "\n]" : "]");
 
         return log.toString();
     }

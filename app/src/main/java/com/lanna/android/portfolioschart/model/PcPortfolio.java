@@ -38,12 +38,12 @@ public class PcPortfolio {
 
     @Override
     public String toString() {
-        return
-//                "id=" + id
-//                (navs != null ? navs.size() : 0)
+        return ""
+//                + "id=" + id
+//                + (navs != null ? navs.size() : 0)
 //                + ", navs=" + navs
-                "" + (filterredNavs != null ? filterredNavs.size() : 0)
-//                + ", filterredNavs=" + filterredNavs
+                + "filterredNavs=" + (filterredNavs != null ? filterredNavs.size() : 0)
+//                + "filterredNavs=" + LogUtils.toLogStrings(true, filterredNavs)
                 ;
     }
 
