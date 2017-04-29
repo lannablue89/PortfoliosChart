@@ -1,11 +1,8 @@
 package com.lanna.android.portfolioschart.model;
 
-import com.google.gson.annotations.SerializedName;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import com.google.gson.annotations.SerializedName;
+import com.lanna.android.portfolioschart.util.DateUtils;
 
 /**
  * Created by lanna on 4/26/17.
@@ -24,8 +21,6 @@ public class PcNav {
     @SerializedName("amount")
     private Float amount; // can be null
 
-    private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-    private static Calendar calendar = Calendar.getInstance();
 
 //    private int dayOfYear = -1;
 
@@ -76,22 +71,6 @@ public class PcNav {
     }
 
     public int getDayOfYear() {
-//        if (dayOfYear > 0) {
-//            return dayOfYear;
-//        }
-
-        Date datetime = null;
-        try {
-            datetime = format.parse(this.date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        if (datetime != null) {
-            calendar.setTime(datetime);
-            return calendar.get(Calendar.DAY_OF_YEAR);
-        }
-
-        return -1;
+        return DateUtils.getDayOfYear(this.date);
     }
 }

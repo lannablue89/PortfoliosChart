@@ -31,6 +31,11 @@ public abstract class DemoBase extends FragmentActivity {
         mTfLight = Typeface.createFromAsset(getAssets(), "OpenSans-Light.ttf");
     }
 
+    protected String getMonthName(float value) {
+        return (value >= 0 && value == (int) value && value < mMonths.length)
+                ? mMonths[(int) value] : "";
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();

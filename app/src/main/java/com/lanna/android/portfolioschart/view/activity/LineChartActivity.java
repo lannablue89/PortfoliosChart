@@ -32,6 +32,7 @@ import com.lanna.android.portfolioschart.model.PcNav;
 import com.lanna.android.portfolioschart.model.PcPortfolio;
 import com.lanna.android.portfolioschart.presenter.LineChartContract;
 import com.lanna.android.portfolioschart.presenter.LineChartPresenter;
+import com.lanna.android.portfolioschart.util.DateUtils;
 import com.lanna.android.portfolioschart.util.LogUtils;
 import com.lanna.android.portfolioschart.util.UiUtils;
 
@@ -49,6 +50,7 @@ public class LineChartActivity extends DemoBase
     private LineChartContract.Presenter presenter;
 
     private Random random;
+    private int buttonViewModeId = R.id.reportByDays;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,17 +116,19 @@ public class LineChartActivity extends DemoBase
         xAxis.setTextColor(Color.DKGRAY);
         xAxis.setDrawGridLines(false);
         xAxis.setDrawAxisLine(false);
+        xAxis.setValueFormatter(new MyXAxisValueFormatter());
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setLabelRotationAngle(-45);
 
         // amount
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setTypeface(mTfLight);
         leftAxis.setTextColor(ColorTemplate.getHoloBlue());
-        leftAxis.setAxisMaximum(200f);
-        leftAxis.setAxisMinimum(0f);
         leftAxis.setDrawGridLines(true);
         leftAxis.setGranularityEnabled(true);
         leftAxis.setValueFormatter(new MyYAxisValueFormatter());
 
+        // disable right axis
         YAxis rightAxis = mChart.getAxisRight();
 //        rightAxis.setDrawLabels(false); // hide only the labels
         rightAxis.setEnabled(false); // hiding the whole right axis
@@ -137,6 +141,18 @@ public class LineChartActivity extends DemoBase
 //        rightAxis.setGranularityEnabled(false);
     }
 
+    private void setupAxis(float minTime, float maxTime, float minAmount, float maxAmount) {
+        // time
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.setAxisMinimum(minTime);
+        xAxis.setAxisMaximum(maxTime);
+
+        // amount
+        YAxis leftAxis = mChart.getAxisLeft();
+        leftAxis.setAxisMinimum(minAmount);
+        leftAxis.setAxisMaximum(maxAmount);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.line, menu);
@@ -145,6 +161,7 @@ public class LineChartActivity extends DemoBase
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        buttonViewModeId = item.getItemId();
         switch (item.getItemId()) {
             case R.id.reportByDays:
                 presenter.reportByDays();
@@ -207,8 +224,10 @@ public class LineChartActivity extends DemoBase
             }
         }
 
-        mChart.getAxisLeft().setAxisMaximum(maxAmount);
-        mChart.getXAxis().setAxisMaximum(portfolios.get(0).getFilterredNavs().size());
+        setupAxis(
+                0, portfolios.get(0).getFilterredNavs().size(),
+                0, maxAmount // amount
+        );
 //        Log.i("app", "bindData: getAxisLeft().setAxisMaximum=" + maxAmount
 //                + ", getXAxis().setAxisMaximum=" + portfolios.get(0).getFilterredNavs().size());
 
@@ -313,14 +332,44 @@ public class LineChartActivity extends DemoBase
         private DecimalFormat mFormat;
 
         public MyYAxisValueFormatter () {
-            mFormat = new DecimalFormat("###,###,##0"); // use one decimal
+            mFormat = new DecimalFormat("###,###,###"); // use one decimal
         }
 
         @Override
         public String getFormattedValue(float value, AxisBase axis) {
-            // write your logic here
             // access the YAxis object to get more information
             return mFormat.format(value);
+        }
+    }
+
+    public class MyXAxisValueFormatter implements IAxisValueFormatter {
+
+        @Override
+        public String getFormattedValue(float value, AxisBase axis) {
+            String result = "";
+
+            switch (buttonViewModeId) {
+                case R.id.reportByDays:
+                    result = DateUtils.getDayMonthInYear((int) value);
+                    break;
+
+                case R.id.reportByMonths:
+                    value -= 1;
+                    result = getMonthName(value);
+                    break;
+
+                case R.id.reportByQuarters:
+                    value -= 1;
+                    result = getMonthName(value*4);
+                    break;
+
+                case R.id.reportTotalForEachDay:
+                    result = DateUtils.getDayMonthInYear((int) value);
+                    break;
+            }
+
+            LogUtils.d("xAxis", "format: " + value + " -> " + result);
+            return result;
         }
     }
 
@@ -329,7 +378,7 @@ public class LineChartActivity extends DemoBase
         private DecimalFormat mFormat;
 
         public MyValueFormatter() {
-            mFormat = new DecimalFormat("###,###,##0.00000"); // use one decimal
+            mFormat = new DecimalFormat("###,###,###.00000"); // use one decimal
         }
 
         @Override
